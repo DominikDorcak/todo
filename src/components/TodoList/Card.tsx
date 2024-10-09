@@ -7,7 +7,7 @@ type TodoListProps = {
 }
 export default function Card({ list }: TodoListProps): React.JSX.Element {
     const getListUrl = (list: TodoList) => {
-        return "/list/" + list.name;
+        return "/list/" + list.id;
     }
     return (
         <Link href={getListUrl(list)}>

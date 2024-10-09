@@ -3,31 +3,28 @@ import Loader from "@/components/Loader";
 import ListItem from "@/components/TodoItem/ListItem";
 import React from "react";
 import {useQuery} from "react-query";
+import API from "@/app/API";
+import Link from "next/link";
 
-export default function ListItems({name}: { name: string }) {
-    const {isLoading, error, data} = useQuery({
+export default function ListItems({listId}: { listId: string }) {
+
+    const itemsQuery = useQuery({
         queryKey: "TodoItems",
-        queryFn: () => {
-            return [
-                {
-                    title: "item 1",
-                    description: "create todo app",
-                    isDone: false,
-                    deadline: new Date("2024-10-10T00:00:00Z")
-                },
-                {
-                    title: "item 1",
-                    description: "get tired",
-                    isDone: true,
-                    deadline: new Date("2024-10-08T19:00:00Z")
-                },
-            ] as TodoItem[]
-        }
+        queryFn: () =>  API.getItems(listId)
+    })
+
+    const listQuery =  useQuery({
+        queryKey: "TodoList",
+        queryFn: () =>  API.getListById(listId)
     })
 
     return (
         <>
-            <table className="table">
+            <h1 className="h-1 text-3xl m-20">
+                TODO list: {listQuery.data?.name}
+            </h1>
+
+            {<table className="table">
                 {/* head */}
                 <thead>
                 <tr>
@@ -39,12 +36,24 @@ export default function ListItems({name}: { name: string }) {
                 </tr>
                 </thead>
                 <tbody>
-                {data && data.length > 0 && data.map((item: TodoItem, index: number) => <ListItem item={item}
-                                                                                                  key={index}/>)}
-                {!!error && <strong className={'alert-error'}>Error fetching data</strong>}
+                {(itemsQuery.data && itemsQuery.data.length > 0)
+                    ?
+                    itemsQuery.data.map((item: TodoItem, index: number) =>
+                    <ListItem listId={listId}
+                              item={item}
+                              key={index}/>)
+                    :
+                    <tr>
+                        <td colSpan={5} className="w-full text-center">No items yet...</td>
+                    </tr>
+                }
+                {!!itemsQuery.error && <strong className='alert-error'>Error fetching data</strong>}
                 </tbody>
-            </table>
-            {isLoading && <Loader/>}
+            </table>}
+            {itemsQuery.isLoading && <Loader/>}
+            <Link href={`/list/${listId}/item/create`}>
+                <button className="btn btn-primary">Add item</button>
+            </Link>
         </>
     )
 }

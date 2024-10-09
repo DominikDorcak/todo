@@ -1,16 +1,18 @@
 import {TodoItem} from "@/types/TodoItem";
 import React from "react";
+import Link from "next/link";
 
-type TodoItemProps = {
+type ListItemProps = {
     item: TodoItem
+    listId: string
 }
 
-export default function ListItem({item}: TodoItemProps): React.JSX.Element {
+export default function ListItem({item, listId}: ListItemProps): React.JSX.Element {
     return (
         <tr>
             <td>{item.title}</td>
             <td>{item.description}</td>
-            <td>{`${item.deadline.toLocaleDateString()} ${item.deadline.toLocaleTimeString()}`}</td>
+            <td>{item.deadline.toLocaleString()}</td>
             <td>{item.isDone
                 ?
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
@@ -24,7 +26,15 @@ export default function ListItem({item}: TodoItemProps): React.JSX.Element {
                 </svg>
 
             }</td>
-            <td></td>
+            <td>
+                <Link href={`/list/${listId}/item/${item.id}`} title={'edit'}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                         stroke="currentColor" className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"/>
+                    </svg>
+                </Link>
+            </td>
         </tr>
     )
 }
