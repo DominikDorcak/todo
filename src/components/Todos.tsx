@@ -11,14 +11,14 @@ export default function Todos(): React.JSX.Element {
     useEffect(() => {
         queryClient.removeQueries({ queryKey: ['TodoItems'], exact: true })
     })
-    
+
     const {isLoading, error, data} = useQuery({
         queryKey: ['TodoLists'],
         queryFn: () => API.getLists()
     })
 
     return (
-        <div className="flex flex-col content-center gap-20 items-center m-5">
+        <div className="flex flex-col content-center gap-20 items-center mb-5 w-full">
             <h1 className="h-1 font-bold m-5 text-3xl text-center">TODO Lists</h1>
             <div className="flex align-middle justify-center flex-row flex-wrap gap-5">
                 {isLoading && <Loader/>}
