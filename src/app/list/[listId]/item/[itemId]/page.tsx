@@ -4,6 +4,7 @@ import ItemPageComponent from "@/app/list/[listId]/item/[itemId]/ItemPageCompone
 export function generateStaticParams() {
     const perms = []
     for (let i = 1; i <= 100; i++) {
+        perms.push({listId: `${i}`, itemId: "create"})
         for (let j = 1; j <= 100; j++) {
             perms.push({listId: `${i}`, itemId: `${j}`})
         }
