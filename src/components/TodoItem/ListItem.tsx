@@ -14,7 +14,7 @@ export default function ListItem({item, listId}: ListItemProps): React.JSX.Eleme
     const deleteMutation = useMutation({
             mutationFn: API.deleteItem,
             onSuccess: () => {
-                queryClient.invalidateQueries({queryKey: ['TodoItems'], exact: true})
+                queryClient.invalidateQueries({queryKey: ['TodoItems/'], exact: true})
             },
         }
     )
@@ -22,7 +22,7 @@ export default function ListItem({item, listId}: ListItemProps): React.JSX.Eleme
     const flipDoneMutation = useMutation({
             mutationFn: API.flipDone,
             onSuccess: () => {
-                queryClient.invalidateQueries({queryKey: ['TodoItems'], exact: true})
+                queryClient.removeQueries({queryKey: ['TodoItems/']})
             },
         }
     )

@@ -7,4 +7,4 @@ Simple TODO app with creating lists, items and simple management.
 
 ## Published on github pages
 
-Live example  [here](https://dominikdorcak.github.io/todo/) 
+Live example [here](https://dominikdorcak.github.io/todo/) 

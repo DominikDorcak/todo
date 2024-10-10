@@ -29,8 +29,17 @@ class APIController {
         return response.json()
     }
 
-    public getItems = async (listId: string): Promise<TodoItem[]> => {
-        const response = await fetch(`${this.baseUrl}/items?listId=${listId}`, {})
+    public getItems = async (listId: string, isDone?: boolean): Promise<TodoItem[]> => {
+        const url = new URL(`${this.baseUrl}/lists/${listId}/items`)
+
+        if (typeof isDone !== "undefined") {
+            url.searchParams.set("isDone", isDone ? 'true' : 'false')
+        }
+
+        const response = await fetch(url, {})
+        if (!response.ok) {
+            return []
+        }
         const data: TodoItem[] = await response.json()
         return data.map(item => {
             item.deadline = new Date(item.deadline as number * 1000)
@@ -69,12 +78,12 @@ class APIController {
     }
 
     public saveItem = async (item: TodoItem)=> {
-        item.deadline = new Date(item.deadline).getTime() / 1000
-        console.log(item.deadline)
+        const itemToSave = {...item}
+        itemToSave.deadline = new Date(item.deadline).getTime() / 1000
         if(item.id){
-            return await this.updateItem(item)
+            return await this.updateItem(itemToSave)
         } else {
-            return await this.addItem(item)
+            return await this.addItem(itemToSave)
         }
     }
 
