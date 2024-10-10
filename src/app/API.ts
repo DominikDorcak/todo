@@ -1,7 +1,7 @@
 import {TodoItem} from "@/types/TodoItem";
 import {TodoList} from "@/types/TodoList";
 
-class API {
+class APIController {
     private readonly baseUrl: string | undefined;
 
     constructor() {
@@ -19,7 +19,7 @@ class API {
     }
 
     public addList = async (list: TodoList) => {
-        const response = await fetch(`${this.baseUrl}/add`, {
+        const response = await fetch(`${this.baseUrl}/lists`, {
             method: 'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -31,9 +31,9 @@ class API {
 
     public getItems = async (listId: string): Promise<TodoItem[]> => {
         const response = await fetch(`${this.baseUrl}/items?listId=${listId}`, {})
-        const data: object[] = await response.json()
+        const data: TodoItem[] = await response.json()
         return data.map(item => {
-            item.deadline = new Date(item.deadline * 1000)
+            item.deadline = new Date(item.deadline as number * 1000)
             return item as TodoItem
         })
 
@@ -69,6 +69,8 @@ class API {
     }
 
     public saveItem = async (item: TodoItem)=> {
+        item.deadline = new Date(item.deadline).getTime() / 1000
+        console.log(item.deadline)
         if(item.id){
             return await this.updateItem(item)
         } else {
@@ -76,8 +78,13 @@ class API {
         }
     }
 
-    public deleteItem = async (id: string) => {
-        const response = await fetch(`${this.baseUrl}/items/${id}`, {
+    public flipDone = async (item: TodoItem) => {
+        item.isDone = !item.isDone
+        return await this.saveItem(item)
+    }
+
+    public deleteItem = async (item: TodoItem) => {
+        const response = await fetch(`${this.baseUrl}/lists/${item.listId}/items/${item.id}`, {
             method: 'DELETE',
         })
         return response.json()
@@ -85,4 +92,5 @@ class API {
 
 }
 
-export default new API();
+const API = new APIController()
+export default API;
