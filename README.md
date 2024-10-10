@@ -5,6 +5,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 Simple TODO app with creating lists, items and simple management.
 
 
-## Published on github pages
+## Published on gitHub pages
 
 Live example [here](https://dominikdorcak.github.io/todo/) 

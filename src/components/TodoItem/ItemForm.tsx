@@ -8,6 +8,7 @@ import {queryClient} from "@/app/QueryClient";
 import {useRouter} from 'next/navigation';
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import React from "react";
 
 
 type ItemFormProps = {
@@ -55,14 +56,32 @@ export default function ItemForm({listId, itemId}: ItemFormProps) {
         queryFn: () => API.getListById(listId)
     })
 
+    const showSuccessAlert = () => {
+        setSuccessAlertVisible(true)
+        setTimeout(() => setSuccessAlertVisible(false), 3000)
+    }
+
+    const showErrorAlert = () => {
+        setErrorAlertVisible(true)
+        setTimeout(() => setErrorAlertVisible(false), 3000)
+    }
+
     const mutation = useMutation({
         mutationFn: API.saveItem,
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['TodoItems'], exact: true})
+            showSuccessAlert()
         },
+        onError: () => {
+            showErrorAlert()
+        }
     })
 
     const router = useRouter()
+
+    const [successAlertVisible, setSuccessAlertVisible] = React.useState(false);
+    const [errorAlertVisible, setErrorAlertVisible] = React.useState(false);
+
 
     return (
         <>
@@ -142,6 +161,40 @@ export default function ItemForm({listId, itemId}: ItemFormProps) {
                             </button>
                             <button className="btn mt-4 btn-primary" type="submit">Save</button>
                         </div>
+
+                        {successAlertVisible &&
+                            <div role="alert" className="alert alert-success mt-8">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 shrink-0 stroke-current"
+                                    fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Item saved!</span>
+                            </div>
+                        }
+
+                        {errorAlertVisible &&
+                            <div role="alert" className="alert alert-error mt-8">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-6 w-6 shrink-0 stroke-current"
+                                    fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Something went wrong!</span>
+                            </div>
+                        }
                     </form>
                 }
             </div>
