@@ -28,6 +28,8 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_API_BASE_URL: https://6706a745a0e04071d227c5f1.mockapi.io/api/v1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
